@@ -1,0 +1,66 @@
+# Filename: sweetlight.kv
+#:import sweetlight sweetlight
+# maybe animate opacity of background
+<SweetLight>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'waiting\nfor\ndata' if root.manager.current_bg == '-1' else (root.manager.current_bg_mmol + ' ' + root.manager.trend_arr if root.manager.units_mmol else root.manager.current_bg + ' ' + root.manager.trend_arr)
+            font_name: 'fonts/DejaVuSansMono.ttf'
+            font_size:dp(80)
+            canvas.before:
+                Color:
+                    rgba: root.manager.label_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        BoxLayout
+            size_hint_y: .35
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: root.manager.label_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text: root.manager.cgm_err
+                font_size: dp(20)
+                text_size:self.size
+                halign:'center'
+
+            Label:
+                text: root.manager.bulb_err
+                font_size: dp(20)
+                text_size:self.size
+                halign:'center'
+
+    AnchorLayout:
+        anchor_x: 'right'
+        anchor_y: 'top'
+        Button:
+            size_hint:(None,None)
+            size:(dp(80),dp(80))
+            font_name: 'fonts/DejaVuSansMono.ttf'
+            font_size:dp(70)
+            text:u'\u2699'
+            background_color: 0, 0, 0, 0
+            #opacity: .75
+            on_press:
+                root.manager.current = 'settingsscreen'
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+        Button:
+            size_hint:(None,None)
+            size:(dp(80),dp(80))
+            font_name: 'fonts/DejaVuSansMono.ttf'
+            font_size:dp(70)
+            text:u'\u2612'
+            background_color: 0, 0, 0, 0
+            #opacity: .75
+            #i actually don't want to turn it off if root.manager.bulb == '-1'
+            on_press:
+                #root.manager.bulb_obj.turn_off() if root.manager.bulb_obj else False
+                root.manager.bulb_obj.turn_off() if root.manager.bulb_obj and root.manager.bulb != '-1' else False
+                app.stop()

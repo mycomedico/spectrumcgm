@@ -1,0 +1,111 @@
+# File name: settings.kv
+#:import settings settings
+
+<SettingsScreen>:
+    AnchorLayout:
+        padding: [dp(25),dp(15),dp(10),dp(10)]
+        anchor_x: 'left'
+        anchor_y: 'top'
+        Button:
+            size_hint:None,None
+            size:(dp(50),dp(50))
+            font_name: 'fonts/DejaVuSansMono.ttf'
+            text: root.back_arr
+            font_size:dp(40)
+            background_color: 0, 0, 0, 0
+            on_press: root.manager.current = 'sweetlight'
+    BoxLayout:
+        padding:dp(25)
+        spacing:dp(50)
+        orientation: 'vertical'
+
+        BoxLayout:
+            spacing:dp(10)
+            Button:
+                text: 'Change User'
+                font_size:dp(15)
+                size_hint: (.3,.4)
+                on_press:
+                    root.manager.username = ''
+                    root.manager.password = ''
+                    root.manager.email = ''
+                    root.manager.cgm = ''
+                    root.manager.location = ''
+                    root.manager.bulb = ''
+                    root.manager.current = 'login'
+                    root.clear_user()
+            Button:
+                text: 'Configure Light'
+                font_size: dp(15)
+                size_hint: (.3,.4)
+                on_press: root.manager.current = 'lightconfig'
+
+        BoxLayout:
+            orientation:'vertical'
+            size_hint_y:None
+            height: dp(70)
+            Label:
+                text: 'Units:'
+                text_size:self.size
+                halign:'left'
+                font_size: dp(20)
+                size_hint_y:None
+                height:dp(25)
+            BoxLayout:
+                BoxLayout:
+                    CheckBox:
+                        group: 'units'
+                        id: _mg
+                        size_hint_x: None
+                        width:dp(50)
+                        on_active: root.manager.units_mmol = False
+                    Label:
+                        text: 'mg/dL'
+                        font_size: dp(18)
+                        text_size:self.size
+                        halign:'left'
+                        valign:'center'
+
+                BoxLayout:
+                    CheckBox:
+                        group: 'units'
+                        id: _mmol
+                        size_hint_x: None
+                        width:dp(50)
+                        on_active: root.manager.units_mmol = True
+                    Label:
+                        text: 'mmol/L'
+                        text_size:self.size
+                        font_size: dp(18)
+                        halign:'left'
+                        valign:'center'
+
+        BoxLayout:
+            orientation:'vertical'
+            opacity: int(not root.no_bulb)
+            Label:
+                text_size:self.size
+                text: 'Adjust Brightness'
+                halign:'left'
+                font_size:dp(20)
+                size_hint_y:None
+                height:dp(25)
+
+            Slider:
+                min: 0
+                max: 100
+                value:  root.brightness
+                disabled: root.no_bulb
+                on_touch_up: root.adjustbrightness(self.value)
+                size_hint_y:None
+                height: dp(80)
+
+        Label:
+            text: root.manager.bulb_err
+            opacity: int(not root.no_bulb)
+            text_size:self.size
+            halign:'center'
+            font_size:dp(20)
+            size_hint_y:None
+            height:dp(25)
+            color: [1,0,0,1]

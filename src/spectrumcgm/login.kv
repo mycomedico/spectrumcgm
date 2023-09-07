@@ -1,0 +1,212 @@
+# Filename: login.kv
+#:import login login
+#:import Factory kivy.factory.Factory
+
+#after clicking libre show userinput and say libre linkup username
+
+<MyPopup>:
+    auto_dismiss: False
+    title: 'Disclaimer:'
+    size_hint: .7, .7
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(10)
+        Label:
+            text: "This software is intended for demonstration or educational purposes and has no affiliation to Dexcom or Abbott.  Do not use for treatment decisions.  There are no guarantees the program will work as described."
+            font_size: dp(20)
+            text_size: self.size
+            halign: 'left'
+            valign: 'center'
+
+        BoxLayout:
+            size_hint_y:.3
+            orientation: 'horizontal'
+            spacing: dp(10)
+            Button:
+                size_hint_y: None
+                height: dp(50)
+                text: 'Proceed'
+                on_release: root.dismiss()
+            Button:
+                size_hint_y: None
+                height: dp(50)
+                text: 'Quit'
+                on_release: app.stop()
+
+<Login>:
+
+    BoxLayout:
+        orientation: 'vertical'
+        opacity: root.loading
+        id: login_layout
+        padding: [dp(20),dp(20),dp(20),dp(20)]
+        spacing: dp(10)
+
+        Label:
+            text:'Choose your CGM:'
+            text_size:self.size
+            halign:'left'
+            font_size: dp(20)
+            size_hint_y:None
+            height:dp(25)
+
+        BoxLayout:
+            size_hint_y:None
+            height:dp(25)
+            BoxLayout:
+                CheckBox:
+                    group: 'cgm'
+                    id: _dexcom_box
+                    size_hint_x: None
+                    width:dp(50)
+                    on_active: root.cgm = 'dexcom'
+                Label:
+                    text: 'Dexcom'
+                    text_size:self.size
+                    halign:'left'
+                    valign:'center'
+                    font_size:dp(17)
+
+            BoxLayout:
+                CheckBox:
+                    group: 'cgm'
+                    id:_libre_box
+                    size_hint_x: None
+                    width:dp(50)
+                    on_active: root.cgm='libre'
+                Label:
+                    text: 'Libre'
+                    text_size:self.size
+                    halign:'left'
+                    valign:'center'
+                    font_size:dp(17)
+        Label:
+            text: 'Location:'
+            text_size:self.size
+            halign:'left'
+            font_size: dp(20)
+            size_hint_y:None
+            height:dp(25)
+            opacity:int(_libre_box.active or _dexcom_box.active)
+        BoxLayout:
+            size_hint_y:None
+            height:dp(25)
+            BoxLayout:
+                CheckBox:
+                    group: 'location'
+                    size_hint_x: None
+                    width:dp(50)
+                    id:_us
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+                    on_active: root.location = 'US'
+                Label:
+                    text:'U.S.'
+                    text_size:self.size
+                    halign:'left'
+                    valign:'center'
+                    font_size:dp(17)
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+            BoxLayout:
+                CheckBox:
+                    group: 'location'
+                    size_hint_x: None
+                    width:dp(50)
+                    on_active: root.location = 'Europe'
+                    id: _europe
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+                Label:
+                    text: 'Europe'
+                    text_size:self.size
+                    halign:'left'
+                    valign:'center'
+                    font_size:dp(17)
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+            BoxLayout:
+                CheckBox:
+                    group:'location'
+                    size_hint_x: None
+                    width:dp(50)
+                    id: _other
+                    on_active: root.location= 'Other'
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+                Label:
+                    text: 'Other'
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'center'
+                    font_size:dp(17)
+                    opacity:int(_libre_box.active or _dexcom_box.active)
+                    disabled:not int(_libre_box.active or _dexcom_box.active)
+        BoxLayout:
+            size_hint_y:None
+            height:dp(150)
+            orientation: 'vertical'
+            opacity:int((_libre_box.active or _dexcom_box.active) and (_us.active or _europe.active or _other.active))
+            disabled:not int((_libre_box.active or _dexcom_box.active) and (_us.active or _europe.active or _other.active))
+            Label:
+                text: root.cgm + ' Username'
+                font_size: dp(18)
+                halign: 'left'
+                valign: 'center'
+                size_hint_y: None
+                height:dp(32)
+                text_size: root.width - dp(20), dp(24)
+            TextInput:
+                id: _login
+                multiline:False
+                font_size: dp(18)
+                size_hint_y:None
+                height: dp(32)
+                write_tab: False
+            Label:
+                text: root.cgm + ' Password'
+                halign: 'left'
+                valign: 'center'
+                font_size: dp(18)
+                size_hint_y: None
+                height: dp(32)
+                text_size: root.width - dp(20), dp(24)
+
+            TextInput:
+                id: password
+                multiline:False
+                password:True
+                size_hint_y:None
+                height:dp(32)
+                font_size: dp(18)
+                write_tab: False
+
+        Label:
+            text: root.cgm_note
+            font_size:dp(15)
+            size_hint_y:None
+            height:dp(25)
+            halign: 'left'
+            text_size: self.size
+            opacity: int(_dexcom_box.active or _libre_box.active)
+
+        Button:
+            text: 'Connect'
+            id:_login_but
+            font_size: dp(40)
+            size_hint:None,None
+            size:(dp(200),dp(170))
+            pos_hint: {'center_x':0.5, 'center_y':0.5}
+            disabled: not ((_login.text and password.text) and (_libre_box.active or _dexcom_box.active) and (_us.active or _europe.active or _other.active))
+            on_press:
+                root.loading=.3
+                self.disabled=True
+            on_release: root.do_login(_login.text, password.text)
+        Label:
+            text:root.manager.cgm_err
+            text_size:self.size
+            halign:'center'
+            font_size:dp(18)
+            color: [1,0,0,1]
+            size_hint_y:None
+            height:dp(25)
